@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+    shadowDatabaseUrl = env("SHADOW_DATABASE_URL") 
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  firstName     String?
+  lastName      String?
+  avatar        String?
+  password  String?
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    Boolean @default(true)
+
+  ApproveLists ApproveList[]
+  // TODO:
+  // invalidEndDate
+  // invalidAmount
+}
+
+model ApproveList {
+  id        String   @id @default(uuid())
+  url      String
+  title String
+  detail String
+  comment String?
+  StatusApprove   StatusApprove? @relation(fields: [statusApproveId], references: [id], onDelete: Cascade)
+  statusApproveId Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  config   Config? @relation(fields: [configId], references: [id], onDelete: Cascade)
+  configId String?
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String?
+}
+
+model Config {
+  id        String   @id @default(uuid())
+  configType   ConfigType? @relation(fields: [configTypeId], references: [id], onDelete: Cascade)
+  configTypeId   String?
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  approveLists ApproveList[]
+}
+
+model ConfigType {
+  id        String   @id @default(uuid())
+  name      String   @default("ทั่วไป")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  configs   Config[]
+}
+
+model StatusApprove {
+  id        Int   @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  approveLists ApproveList[]
+}
+
+
+enum UserRole {
+  USER
+  ADMIN
+}
