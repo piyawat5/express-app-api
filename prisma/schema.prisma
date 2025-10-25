@@ -41,7 +41,7 @@ model ApproveList {
   idFrom String
   apiPath String
   StatusApprove   StatusApprove? @relation(fields: [statusApproveId], references: [id], onDelete: Cascade)
-  statusApproveId Int?
+  statusApproveId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   config   Config? @relation(fields: [configId], references: [id], onDelete: Cascade)
