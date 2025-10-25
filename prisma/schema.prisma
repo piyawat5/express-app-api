@@ -38,6 +38,8 @@ model ApproveList {
   title String
   detail String
   comment String?
+  idFrom String
+  apiPath String
   StatusApprove   StatusApprove? @relation(fields: [statusApproveId], references: [id], onDelete: Cascade)
   statusApproveId Int?
   createdAt DateTime @default(now())

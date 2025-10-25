@@ -123,8 +123,17 @@ export const getApproveListById = async (req, res, next) => {
 // POST /api/approve-lists - สร้าง ApproveList ใหม่
 export const createApproveList = async (req, res, next) => {
   try {
-    const { url, title, detail, comment, statusApproveId, configId, userId } =
-      req.body;
+    const {
+      url,
+      title,
+      detail,
+      comment,
+      idFrom,
+      apiPath,
+      statusApproveId,
+      configId,
+      userId,
+    } = req.body;
 
     // Validation
     if (!url || !title || !detail) {
@@ -137,6 +146,8 @@ export const createApproveList = async (req, res, next) => {
         title,
         detail,
         comment,
+        idFrom,
+        apiPath,
         statusApproveId,
         configId,
         userId,
