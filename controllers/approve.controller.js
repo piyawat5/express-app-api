@@ -1,5 +1,6 @@
 import prisma from "../config/prisma.js";
 import createError from "../utils/createError.js";
+import { sendLineMessage } from "../utils/lineNotify.js";
 import axios from "axios";
 
 // GET /api/approve-lists - รับรายการ ApproveList พร้อม pagination
@@ -324,6 +325,41 @@ export const getApproveListsByUserId = async (req, res, next) => {
         hasNext: pageNum < Math.ceil(total / sizeNum),
         hasPrev: pageNum > 1,
       },
+    });
+  } catch (error) {
+    return next(createError(500, error));
+  }
+};
+
+export const cronjobNotifyPendingApprove = async (req, res, next) => {
+  try {
+    const pendingApproves = await prisma.approveList.findMany({
+      where: { statusApproveId: 1 }, // 1 คือสถานะ "รอดำเนินการ"
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+        config: true,
+      },
+    });
+    if (pendingApproves.length === 0) {
+      return res.json({
+        success: true,
+        message: "ไม่มีรายการรอดำเนินการ",
+      });
+    }
+    let message = "แจ้งเตือนประจำวัน \n รายการที่รออนุมัติบนระบบ Approve:\n";
+    pendingApproves.forEach((approve) => {
+      message += `- ${approve.title} (${approve.user.firstName} ${approve.user.lastName})\n`;
+    });
+    // ส่งข้อความแจ้งเตือนผ่าน LINE Notify
+    await sendLineMessage(message);
+    res.json({
+      success: true,
+      message: "ส่งการแจ้งเตือนรายการรอดำเนินการสำเร็จ",
     });
   } catch (error) {
     return next(createError(500, error));

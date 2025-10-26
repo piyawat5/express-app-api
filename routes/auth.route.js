@@ -9,6 +9,7 @@ import {
   deleteApproveList,
   getApproveListsByUserId,
   createStatusApprove,
+  cronjobNotifyPendingApprove,
 } from "../controllers/approve.controller.js";
 
 import {
@@ -33,6 +34,7 @@ router.delete("/approve/delete/:id", deleteApproveList);
 router.get("/user/:userId", getApproveListsByUserId);
 
 router.post("/approve/statusApprove", createStatusApprove);
+router.post("/approve/cronjob/daily-notify", cronjobNotifyPendingApprove);
 
 // ------------- config --------------
 router.get("/config/type", getConfigTypes); //
