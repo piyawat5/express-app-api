@@ -201,11 +201,11 @@ export const createStatusApprove = async (req, res, next) => {
   }
 };
 
-// PUT /api/approve-lists/:id - แก้ไข ApproveList
+// update ต้นทาง
 export const updateApproveList = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { url, title, detail, comment, statusApproveId, configId } = req.body;
+    const { comment, statusApproveId, apiPath, idFrom } = req.body;
 
     // ตรวจสอบว่ามีข้อมูลอยู่หรือไม่
     const existingApproveList = await prisma.approveList.findUnique({
@@ -219,12 +219,8 @@ export const updateApproveList = async (req, res, next) => {
     const approveList = await prisma.approveList.update({
       where: { id },
       data: {
-        ...(url && { url }),
-        ...(title && { title }),
-        ...(detail && { detail }),
         ...(comment !== undefined && { comment }),
         ...(statusApproveId !== undefined && { statusApproveId }),
-        ...(configId !== undefined && { configId }),
       },
       include: {
         user: {
@@ -246,10 +242,15 @@ export const updateApproveList = async (req, res, next) => {
       },
     });
 
+    const response = await axios.post(`${apiPath}${idFrom}`, {
+      statusApproveId,
+      comment,
+    });
+
     res.json({
       success: true,
-      message: "แก้ไข ApproveList สำเร็จ",
-      data: approveList,
+      message: "อัพเดทสถานะสำเร็จ",
+      data: { approveList, response },
     });
   } catch (error) {
     return next(createError(500, error));
