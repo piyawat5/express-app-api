@@ -242,7 +242,7 @@ export const updateApproveList = async (req, res, next) => {
       },
     });
 
-    const response = await axios.post(`${apiPath}${idFrom}`, {
+    const response = await axios.put(`${apiPath}${idFrom}`, {
       statusApproveId,
       comment,
     });
@@ -250,7 +250,6 @@ export const updateApproveList = async (req, res, next) => {
     res.json({
       success: true,
       message: "อัพเดทสถานะสำเร็จ",
-      data: { approveList, response },
     });
   } catch (error) {
     return next(createError(500, error));
