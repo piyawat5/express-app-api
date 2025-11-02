@@ -3,6 +3,7 @@ import createError from "../utils/createError.js";
 import bcrypt from "bcryptjs";
 
 import nodemailer from "nodemailer";
+import jwt from "jsonwebtoken";
 import axios from "axios";
 
 // ------------------- function -----------------------
