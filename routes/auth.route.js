@@ -37,7 +37,7 @@ router.delete("/approve/delete/:id", verifyToken, deleteApproveList);
 router.get("/user/:userId", verifyToken, getApproveListsByUserId);
 
 router.post("/approve/statusApprove", createStatusApprove);
-router.post("/approve/cronjob/daily-notify", cronjobNotifyPendingApprove);
+router.get("/approve/cronjob/daily-notify", cronjobNotifyPendingApprove);
 
 // ------------- config --------------
 router.get("/config/type", verifyToken, getConfigTypes); //
