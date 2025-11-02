@@ -31,7 +31,7 @@ const router = express.Router();
 router.post("/auth/register", validate(registerSchema), register);
 router.get("/approve", verifyToken, getApproveLists);
 router.get("/approve/:id", verifyToken, getApproveListById);
-router.post("/approve/create", verifyToken, createApproveList);
+router.post("/approve/create", createApproveList);
 router.put("/approve/update/:id", verifyToken, updateApproveList);
 router.delete("/approve/delete/:id", verifyToken, deleteApproveList);
 router.get("/user/:userId", verifyToken, getApproveListsByUserId);

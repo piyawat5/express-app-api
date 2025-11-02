@@ -125,6 +125,7 @@ export const getApproveListById = async (req, res, next) => {
 export const createApproveList = async (req, res, next) => {
   try {
     const {
+      apiKey,
       url,
       title,
       detail,
@@ -139,6 +140,10 @@ export const createApproveList = async (req, res, next) => {
     // Validation
     if (!url || !title || !detail) {
       return next(createError(400, "กรุณากรอก url, title และ detail"));
+    }
+
+    if (apiKey !== process.env.API_KEY) {
+      return next(createError(400, "API KEY ไม่ถูกต้อง"));
     }
 
     const approveList = await prisma.approveList.create({
