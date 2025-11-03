@@ -370,3 +370,48 @@ export const cronjobNotifyPendingApprove = async (req, res, next) => {
     return next(createError(500, error));
   }
 };
+
+export const cronjobNotifyMockupFAC = async (req, res, next) => {
+  try {
+    // const pendingApproves = await prisma.approveList.findMany({
+    //   where: { statusApproveId: 1 }, // 1 คือสถานะ "รอดำเนินการ"
+    //   include: {
+    //     user: {
+    //       select: {
+    //         firstName: true,
+    //         lastName: true,
+    //       },
+    //     },
+    //     config: true,
+    //   },
+    // });
+    // if (pendingApproves.length === 0) {
+    //   return res.json({
+    //     success: true,
+    //     message: "ไม่มีรายการรอดำเนินการ",
+    //   });
+    // }
+    let message = "แจ้งเตือนประจำวัน \n\n";
+    message += "💶ระบบ FAC : \n";
+    message += "เงินกองกลางคงเหลือ 2,572.00 บาท\n\n";
+    message += "✅ระบบ APP : \n";
+    message += "ไม่มีรายการแจ้งเตือน\n\n";
+    message += "⚙️ระบบ MA : \n";
+    message += "ไม่มีรายการแจ้งเตือน\n\n";
+    message += "📱ระบบ AC : \n";
+    message += "ไม่มีรายการแจ้งเตือน\n\n";
+    message += "👶🏻ระบบ Unique : \n";
+    message += "ไม่มีรายการแจ้งเตือน";
+    // pendingApproves.forEach((approve) => {
+    //   message += `- ${approve.title} (${approve.user.firstName} ${approve.user.lastName})\n`;
+    // });
+    // ส่งข้อความแจ้งเตือนผ่าน LINE Notify
+    await sendLineMessage(message);
+    res.json({
+      success: true,
+      message: "ส่งการแจ้งเตือนรายการรอดำเนินการสำเร็จ",
+    });
+  } catch (error) {
+    return next(createError(500, error));
+  }
+};

@@ -10,6 +10,7 @@ import {
   getApproveListsByUserId,
   createStatusApprove,
   cronjobNotifyPendingApprove,
+  cronjobNotifyMockupFAC,
 } from "../controllers/approve.controller.js";
 
 import {
@@ -38,6 +39,7 @@ router.get("/user/:userId", verifyToken, getApproveListsByUserId);
 
 router.post("/approve/statusApprove", createStatusApprove);
 router.get("/approve/cronjob/daily-notify", cronjobNotifyPendingApprove);
+router.get("/approve/cronjob/daily-notify-fac", cronjobNotifyMockupFAC);
 
 // ------------- config --------------
 router.get("/config/type", verifyToken, getConfigTypes); //
