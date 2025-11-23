@@ -356,7 +356,7 @@ export const cronjobNotifyPendingApprove = async (req, res, next) => {
         message: "ไม่มีรายการรอดำเนินการ",
       });
     }
-    let message = "แจ้งเตือนรายการที่ค้างอยู่";
+    let message = "แจ้งเตือนรายการที่ค้างอยู่\n";
     pendingApproves.forEach((approve) => {
       message += `- คุณ (${approve.user.firstName} ${approve.user.lastName}) กรุณาอนุมัติจำนวน 1 รายการที่ระบบ APP\n`;
     });
