@@ -26,10 +26,10 @@ model User {
   updatedAt DateTime @updatedAt
   status    Boolean @default(true)
 
-  ApproveLists ApproveList[]
-  // TODO:
-  // invalidEndDate
-  // invalidAmount
+  // ApproveLists ApproveList[]
+
+  transactionsOwned ApproveList[] @relation("UserOwnedTransactions")
+  transactionsApproved ApproveList[] @relation("UserApprovedTransactions")
 }
 
 model ApproveList {
@@ -46,8 +46,13 @@ model ApproveList {
   updatedAt DateTime @updatedAt
   config   Config? @relation(fields: [configId], references: [id], onDelete: Cascade)
   configId String?
-  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String?
+  // user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // userId  String?
+
+  ownerId   String
+  approveId  String?
+  owner     User     @relation("UserOwnedTransactions", fields: [ownerId], references: [id], onDelete: Cascade)
+  approver   User?    @relation("UserApprovedTransactions", fields: [approveId], references: [id], onDelete: Cascade)
 }
 
 model Config {

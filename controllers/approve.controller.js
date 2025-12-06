@@ -9,7 +9,8 @@ export const getApproveLists = async (req, res, next) => {
     const {
       page = "1",
       size = "10",
-      userId,
+      approveId,
+      ownerId,
       statusApproveId,
       configId,
       search,
@@ -22,7 +23,8 @@ export const getApproveLists = async (req, res, next) => {
     // สร้าง where condition
     const where = {};
 
-    if (userId) where.userId = userId;
+    if (approveId) where.approveId = approveId;
+    if (ownerId) where.ownerId = ownerId;
     if (statusApproveId) where.statusApproveId = statusApproveId;
     if (configId) where.configId = configId;
     if (search) {
@@ -42,7 +44,17 @@ export const getApproveLists = async (req, res, next) => {
       skip,
       take: sizeNum,
       include: {
-        user: {
+        owner: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+            role: true,
+          },
+        },
+        approver: {
           select: {
             id: true,
             email: true,
@@ -89,7 +101,17 @@ export const getApproveListById = async (req, res, next) => {
     const approveList = await prisma.approveList.findUnique({
       where: { id },
       include: {
-        user: {
+        owner: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+            role: true,
+          },
+        },
+        approver: {
           select: {
             id: true,
             email: true,
@@ -134,7 +156,8 @@ export const createApproveList = async (req, res, next) => {
       apiPath,
       statusApproveId,
       configId,
-      userId,
+      ownerId,
+      approveId,
     } = req.body;
 
     // Validation
@@ -156,10 +179,21 @@ export const createApproveList = async (req, res, next) => {
         apiPath,
         statusApproveId,
         configId,
-        userId,
+        ownerId,
+        approveId,
       },
       include: {
-        user: {
+        owner: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+            role: true,
+          },
+        },
+        approver: {
           select: {
             id: true,
             email: true,
@@ -356,9 +390,9 @@ export const cronjobNotifyPendingApprove = async (req, res, next) => {
         message: "ไม่มีรายการรอดำเนินการ",
       });
     }
-    let message = "แจ้งเตือนรายการที่ค้างอยู่\n";
+    let message = "แจ้งเตือนรายการที่รออนุมัติ!!!\n";
     pendingApproves.forEach((approve) => {
-      message += `- คุณ (${approve.user.firstName} ${approve.user.lastName}) กรุณาอนุมัติจำนวน 1 รายการที่ระบบ APP\n`;
+      message += `- คุณ (${approve.user.firstName}) กรุณาอนุมัติจำนวน 1 รายการที่ระบบ APP\n`;
     });
     // ส่งข้อความแจ้งเตือนผ่าน LINE Notify
     await sendLineMessage(message);
@@ -391,7 +425,7 @@ export const cronjobNotifyMockupFAC = async (req, res, next) => {
     //     message: "ไม่มีรายการรอดำเนินการ",
     //   });
     // }
-    let message = "แจ้งเตือนประจำวัน \n\n";
+    let message = "แจ้งเตือนประจำสุดสัปดาห์ \n\n";
     message += "💶ระบบ FAC : \n";
     message += "เงินกองกลางคงเหลือ 2,572.00 บาท\n\n";
     message += "✅ระบบ APP : \n";
