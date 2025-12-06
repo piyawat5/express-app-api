@@ -49,9 +49,9 @@ model ApproveList {
   // user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   // userId  String?
 
-  ownerId   String
+  ownerId   String?
   approveId  String?
-  owner     User     @relation("UserOwnedTransactions", fields: [ownerId], references: [id], onDelete: Cascade)
+  owner     User?     @relation("UserOwnedTransactions", fields: [ownerId], references: [id], onDelete: Cascade)
   approver   User?    @relation("UserApprovedTransactions", fields: [approveId], references: [id], onDelete: Cascade)
 }
 
