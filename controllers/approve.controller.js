@@ -262,7 +262,17 @@ export const updateApproveList = async (req, res, next) => {
         ...(statusApproveId !== undefined && { statusApproveId }),
       },
       include: {
-        user: {
+        approver: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+            role: true,
+          },
+        },
+        owner: {
           select: {
             id: true,
             email: true,
