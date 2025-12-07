@@ -375,7 +375,7 @@ export const cronjobNotifyPendingApprove = async (req, res, next) => {
     const pendingApproves = await prisma.approveList.findMany({
       where: { statusApproveId: 1 }, // 1 คือสถานะ "รอดำเนินการ"
       include: {
-        user: {
+        approver: {
           select: {
             firstName: true,
             lastName: true,
@@ -392,7 +392,7 @@ export const cronjobNotifyPendingApprove = async (req, res, next) => {
     }
     let message = "แจ้งเตือนรายการที่รออนุมัติ!!!\n";
     pendingApproves.forEach((approve) => {
-      message += `- คุณ (${approve.user.firstName}) กรุณาอนุมัติจำนวน 1 รายการที่ระบบ APP\n`;
+      message += `- คุณ (${approve.approver.firstName}) มีรายการที่ยังไม่ได้อนุมัติบนระบบ APP\n`;
     });
     // ส่งข้อความแจ้งเตือนผ่าน LINE Notify
     await sendLineMessage(message);
