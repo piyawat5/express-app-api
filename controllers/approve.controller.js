@@ -391,6 +391,12 @@ export const cronjobNotifyPendingApprove = async (req, res, next) => {
             lastName: true,
           },
         },
+        owner: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
         config: true,
       },
     });
@@ -400,9 +406,17 @@ export const cronjobNotifyPendingApprove = async (req, res, next) => {
         message: "ไม่มีรายการรอดำเนินการ",
       });
     }
-    let message = "แจ้งเตือนรายการที่รออนุมัติ!!!\n";
+    let message = "รายการที่ยังไม่ได้อนุมัติบน APP!!!\n\n";
     pendingApproves.forEach((approve) => {
-      message += `- คุณ (${approve.approver.firstName}) มีรายการที่ยังไม่ได้อนุมัติบนระบบ APP\n`;
+      message += `หัวเรื่อง: ${approve.title}\n`;
+      message += `รายละเอียด: ${approve.detail}\n`;
+      message += `👤 ผู้ส่งขอ: ${approve.owner.firstName}\n`;
+      message += `👤 ผู้อนุมัติ: ${approve.approver.firstName}\n`;
+      const createdAt = new Date(approve.createdAt).toLocaleString("th-TH", {
+        dateStyle: "long",
+        timeStyle: "medium",
+      });
+      message += `วันที่สร้างรายการ: ${createdAt}\n\n`;
     });
     // ส่งข้อความแจ้งเตือนผ่าน LINE Notify
     await sendLineMessage(message);
